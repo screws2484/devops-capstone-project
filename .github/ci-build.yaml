@@ -1,0 +1,9 @@
+name: CI Build
+on:
+ Push:
+  branches:
+   - main
+ pull_request:
+  branches:
+   -main
+   
