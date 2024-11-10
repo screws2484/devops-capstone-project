@@ -13,25 +13,29 @@ from service.common import log_handlers
 app = Flask(__name__)
 app.config.from_object(config)
 
-# Import the routes After the Flask app is created
-# pylint: disable=wrong-import-position, cyclic-import, wrong-import-order
-from service import routes, models  # noqa: F401 E402
+# Import Flask-Talisman and apply it to the Flask app for security headers
+from flask_talisman import Talisman
+talisman = Talisman(app)
 
-# pylint: disable=wrong-import-position
+# Import routes and models after app is created and Talisman is applied
+from service import routes, models  # noqa: F401 E402
 from service.common import error_handlers, cli_commands  # noqa: F401 E402
 
 # Set up logging for production
 log_handlers.init_logging(app, "gunicorn.error")
 
+# Info message to confirm service startup
 app.logger.info(70 * "*")
 app.logger.info("  A C C O U N T   S E R V I C E   R U N N I N G  ".center(70, "*"))
 app.logger.info(70 * "*")
 
+# Initialize the database, creating tables
 try:
-    models.init_db(app)  # make our database tables
+    models.init_db(app)  # Make our database tables
 except Exception as error:  # pylint: disable=broad-except
     app.logger.critical("%s: Cannot continue", error)
-    # gunicorn requires exit code 4 to stop spawning workers when they die
     sys.exit(4)
 
+# Final info to indicate the service has started
 app.logger.info("Service initialized!")
+
