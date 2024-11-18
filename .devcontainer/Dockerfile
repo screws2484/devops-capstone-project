@@ -54,3 +54,10 @@ ENV TERM=xterm-256color
 
 # Become a regular user
 USER $USERNAME
+
+# The application is hosted at the following OpenShift URL
+# OpenShift URL: accounts-sn-labs-stlerenzllc.labs-prod-openshift-san-a45631dc5778dc6371c67d206ba9ae5c-0000.us-east.containers.appdomain.cloud
+
+FROM ubuntu:18.04
+
+
